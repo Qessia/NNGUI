@@ -12,7 +12,9 @@ name = "NNGUI"
 version = "0.1"
 url = "https://github.com/Qessia/NNGUI"
 description = """Simple desktop application for comfortable working with your neural network"""
-authors = [Author("Timur Gayazov", "Vladimir Taratutin", "Mikhail Klementiev")]
+authors = [Author("Timur Gayazov", "timurgayazovfw@gmail.com", "application development"),
+           Author("Vladimir Taratutin", "v.taraturin@g.nsu.ru", "NN interfaces"),
+           Author("Mikhail Klementiev", "m.klementiev@g.nsu.ru", "design & documentation")]
 license = "None"
 default_task = "publish"
 

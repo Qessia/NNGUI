@@ -2,20 +2,28 @@ import dearpygui.dearpygui as dpg
 
 dpg.create_context()
 
-def callback(sender, filter_string):
-    dpg.set_value("filter_id", filter_string)
+def callback(sender, app_data):
+    print("Sender: ", sender)
+    print("App Data: ", app_data)
 
-with dpg.window(label="about", width =500, height=300):
-    dpg.add_input_text(label="Filter (inc, -exc)", callback=callback)
-    with dpg.filter_set(id="filter_id"):
-        dpg.add_text("aaa1.c", filter_key="aaa1.c", bullet=True)
-        dpg.add_text("bbb1.c", filter_key="bbb1.c", bullet=True)
-        dpg.add_text("ccc1.c", filter_key="ccc1.c", bullet=True)
-        dpg.add_text("aaa2.cpp", filter_key="aaa2.cpp", bullet=True)
-        dpg.add_text("bbb2.cpp", filter_key="bbb2.cpp", bullet=True)
-        dpg.add_text("ccc2.cpp", filter_key="ccc2.cpp", bullet=True)
-        dpg.add_text("abc.h", filter_key="abc.h", bullet=True)
-        dpg.add_text("hello, world", filter_key="hello, world", bullet=True)
+with dpg.file_dialog(directory_selector=False, show=False, callback=callback, file_count=3, tag="file_dialog_tag"):
+    dpg.add_file_extension("", color=(255, 150, 150, 255))
+    dpg.add_file_extension(".*")
+    dpg.add_file_extension(".cpp", color=(255, 255, 0, 255))
+    dpg.add_file_extension(".h", color=(255, 0, 255, 255))
+    dpg.add_file_extension(".py", color=(0, 255, 0, 255))
+
+    dpg.add_button(label="fancy file dialog")
+    with dpg.child_window(width=100):
+        dpg.add_selectable(label="bookmark 1")
+        dpg.add_selectable(label="bookmark 2")
+        dpg.add_selectable(label="bookmark 3")
+
+with dpg.window(label="Tutorial", width=800, height=300):
+    dpg.add_button(label="File Selector", callback=lambda: dpg.show_item("file_dialog_tag"))
+
+with dpg.window(label="Tutorial", width=800, height=300):
+    dpg.add_button(label="File Selector", callback=lambda: dpg.show_item("file_dialog_tag"))
 
 dpg.create_viewport(title='Custom Title', width=800, height=600)
 dpg.setup_dearpygui()
