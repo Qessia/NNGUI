@@ -2,9 +2,11 @@ import dearpygui.dearpygui as dpg
 
 dpg.create_context()
 
+
 def callback(sender, app_data):
     print("Sender: ", sender)
     print("App Data: ", app_data)
+
 
 with dpg.file_dialog(directory_selector=False, show=False, callback=callback, file_count=3, tag="file_dialog_tag"):
     dpg.add_file_extension("", color=(255, 150, 150, 255))

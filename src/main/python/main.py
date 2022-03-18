@@ -1,4 +1,5 @@
 import dearpygui.dearpygui as dpg
+from pathlib import Path
 
 
 def print_me(sender):
@@ -15,9 +16,8 @@ dpg.create_context()
 
 with dpg.font_registry():
     # first argument ids the path to the .ttf or .otf file
-    default_font = dpg.add_font("C:\\Users\\timur\\PycharmProjects\\NNGUI\\src\\assets\\Roboto-Light.ttf", 20)
-    second_font = dpg.add_font("C:\\Users\\timur\\PycharmProjects\\NNGUI\\src\\assets\\Roboto-Medium.ttf", 20)
-
+    default_font = dpg.add_font(str(Path('..', '..', 'assets', 'Roboto-Light.ttf')), 20)
+    second_font = dpg.add_font(str(Path('..', '..', 'assets', 'Roboto-Medium.ttf')), 20)
 
 with dpg.file_dialog(directory_selector=False, show=False, callback=callback, tag="file_dialog_tag",
                      width=720, height=480):
