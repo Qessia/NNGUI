@@ -1,11 +1,13 @@
 #   -*- coding: utf-8 -*-
 from pybuilder.core import use_plugin, init, Author
 
+
 use_plugin("python.core")
 use_plugin("python.unittest")
 use_plugin("python.flake8")
 use_plugin("python.coverage")
 use_plugin("python.distutils")
+use_plugin("python.sphinx")
 
 
 name = "NNGUI"
@@ -21,4 +23,5 @@ default_task = "publish"
 
 @init
 def set_properties(project):
-    pass
+    project.set_properties("sphinx_source_dir", "docs")
+    project.set_properties("sphinx_source_dir", "docs/_build")
