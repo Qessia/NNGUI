@@ -13,11 +13,13 @@ def print_me(sender):
 
 
 def load_model():
+    global model
     model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
 
 
 def del_model():
-    pass
+    print(model)
+
 
 
 def del_table():
@@ -85,7 +87,9 @@ class DatasetBrowser(Browser):
         Browser.__init__(self, True, tag_child, {".*": (0, 255, 0, 255)})
 
     def callback(self, sender, app_data):
-        pass
+        # print(app_data)
+        dpg.set_value("dataset_path", list(app_data['selections'].values())[0])
+        dpg.set_value("dataset_name", app_data['file_name']) # TODO!!!
 
 
 class ModelBrowser(Browser):
@@ -130,9 +134,11 @@ def gui():
 
     CSVBrowser("csv_browse")
     ModelBrowser("model_browse")
+    DatasetBrowser("dataset_browse")
 
     with dpg.value_registry():
-        dpg.add_string_value(default_value="Choose dataset directory", tag="dataset_dir")
+        dpg.add_string_value(tag="dataset_path")
+        dpg.add_string_value(default_value="Choose dataset directory", tag="dataset_name")
 
         dpg.add_string_value(tag="csv_path")
         dpg.add_string_value(default_value="choose csv", tag="csv_name")
@@ -177,12 +183,17 @@ def gui():
                             dpg.add_text(source="model_name")
                             dpg.add_button(label="Delete model", callback=del_model)
 
-                    with dpg.tab(label="Dataset", tag="csv_view"):
+                    with dpg.tab(label="CSV", tag="csv_view"):
                         with dpg.group(horizontal=True):
                             dpg.add_button(label="Browse", callback=lambda: dpg.show_item("csv_browse"))
                             dpg.add_button(label="Build", callback=build_csv)
                             dpg.add_text(source="csv_name")
                             dpg.add_button(label="Delete", callback=del_table)
+                    with dpg.tab(label="Dataset", tag="dataset"):
+                        with dpg.group(horizontal=True):
+                            dpg.add_button(label="Browse", callback=lambda: dpg.show_item("dataset_browse"))
+                            dpg.add_text(source="dataset_name")
+                            # dpg.add_button(label="Delete", callback=del_table)
                     with dpg.tab(label="Some plots"):
                         with dpg.child_window(label="Plot", border=False):
                             sindatax = []
