@@ -4,6 +4,8 @@ from math import sin
 import pandas as pd
 import numpy as np
 import torch
+from torch.utils.data import DataLoader
+import re
 
 import nntemplate as mynn
 
@@ -13,12 +15,26 @@ def print_me(sender):
 
 
 def load_model():
-    global model
-    model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
+    mynn.model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
+
+
+def train():
+    acc_val, loss_val, acc_train = mynn.fit(2, train_dl, val_dl)
+
+
+def data_prepairing():
+    global train_dl
+    global val_dl
+    train_dir = re.sub(r"2 files Selected\\", "", dpg.get_value("train_dir_path"))
+    test_dir = re.sub(r"2 files Selected\\", "", dpg.get_value("test_dir_path"))
+    train_set = mynn.TrainSet(train_dir)
+    test_set = mynn.ValSet(train_dir, test_dir)
+    train_dl = DataLoader(train_set, batch_size=64, shuffle=True)
+    val_dl = DataLoader(test_set, batch_size=128)
 
 
 def del_model():
-    print(model)
+    pass
 
 
 def check_dataset():
@@ -94,8 +110,9 @@ class DatasetBrowser(Browser):
         # print(app_data)
         dpg.set_value("train_dir_path", list(app_data['selections'].values())[1])
         dpg.set_value("test_dir_path", list(app_data['selections'].values())[0])
-        dpg.set_value("train_dir_name", app_data['file_name']) # TODO!!!
-        dpg.set_value("test_dir_name", app_data['file_name']) # TODO!!!
+        dpg.set_value("train_dir_name", app_data['file_name'])  # TODO!!!
+        dpg.set_value("test_dir_name", app_data['file_name'])  # TODO!!!
+        data_prepairing()
 
 
 class ModelBrowser(Browser):
@@ -130,7 +147,6 @@ def gui():
 
     # THEME DESCRIPTION
     with dpg.theme() as tab_theme:
-
         with dpg.theme_component(dpg.mvAll):
             # dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (255, 140, 23), category=dpg.mvThemeCat_Core)
             # dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (255, 0, 0), category=dpg.mvThemeCat_Core)

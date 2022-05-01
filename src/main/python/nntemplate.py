@@ -5,12 +5,15 @@ from pathlib import Path
 import numpy as np
 
 import re
-# import torch.nn.functional as F
-# from torch import optim
+import torch.nn.functional as F
+from torch import optim
 from torchvision.io import read_image
 
 # from torchvision import models
 from torchvision import transforms
+
+global model
+loss_func = F.cross_entropy
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -45,9 +48,9 @@ class TrainSet(Dataset):
 
 class ValSet(Dataset):
 
-    def __init__(self, dir):
-        self.train_dir = Path(dir)
-        self.test_dir = Path('simpsons/kaggle_simpson_testset')
+    def __init__(self, dir1, dir2):
+        self.train_dir = Path(dir1)
+        self.test_dir = Path(dir2)
         self.test_files_path = sorted(list(self.test_dir.rglob('*.jpg')))  # пути к файлам теста
         test_classes = [path.name for path in self.test_files_path]
         self.test_class_names = [re.sub(r"_\d+.jpg", "", path) for path in test_classes]  # имена классов для теста
@@ -70,7 +73,7 @@ class ValSet(Dataset):
         return img, img_y
 
 
-def loss_batch(model, loss_func, xb, yb, opt=None):
+def loss_batch(model, xb, yb, opt=None):
     predict = model(xb)
     loss = loss_func(predict, yb)
     predict = [torch.argmax(pred) for pred in predict]
@@ -88,18 +91,19 @@ def loss_batch(model, loss_func, xb, yb, opt=None):
     return loss.item(), len(xb), trueCount / len(yb)
 
 
-def fit(epochs, model, loss_func, opt, train_dl, valid_dl):
+def fit(epochs, train_dl, valid_dl):
+    opt = optim.SGD(model.parameters(), lr=0.01)
     acc_val = []
     loss_val = []
     acc_train = []
     for epoch in range(epochs):
         model.train()
-        _, numsT, acc_train = zip(*[loss_batch(model, loss_func, xb.cuda(), yb.cuda(), opt) for xb, yb in train_dl])
+        _, numsT, acc_train = zip(*[loss_batch(model, xb.cuda(), yb.cuda(), opt) for xb, yb in train_dl])
 
         model.eval()
         with torch.no_grad():
             losses, nums, acc_val = zip(
-                *[loss_batch(model, loss_func, xb.cuda(), yb.cuda()) for xb, yb in valid_dl]
+                *[loss_batch(model, xb.cuda(), yb.cuda()) for xb, yb in valid_dl]
             )
         val_loss = np.sum(np.multiply(losses, nums)) / np.sum(nums)
         accuracy_val = np.sum(np.multiply(acc_val, nums)) / np.sum(nums)
