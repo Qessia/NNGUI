@@ -21,6 +21,10 @@ def del_model():
     print(model)
 
 
+def check_dataset():
+    print(dpg.get_value("train_dir_path"))
+    print(dpg.get_value("test_dir_path"))
+
 
 def del_table():
     if dpg.does_item_exist("csv_table"):
@@ -88,8 +92,10 @@ class DatasetBrowser(Browser):
 
     def callback(self, sender, app_data):
         # print(app_data)
-        dpg.set_value("dataset_path", list(app_data['selections'].values())[0])
-        dpg.set_value("dataset_name", app_data['file_name']) # TODO!!!
+        dpg.set_value("train_dir_path", list(app_data['selections'].values())[1])
+        dpg.set_value("test_dir_path", list(app_data['selections'].values())[0])
+        dpg.set_value("train_dir_name", app_data['file_name']) # TODO!!!
+        dpg.set_value("test_dir_name", app_data['file_name']) # TODO!!!
 
 
 class ModelBrowser(Browser):
@@ -137,8 +143,10 @@ def gui():
     DatasetBrowser("dataset_browse")
 
     with dpg.value_registry():
-        dpg.add_string_value(tag="dataset_path")
-        dpg.add_string_value(default_value="Choose dataset directory", tag="dataset_name")
+        dpg.add_string_value(tag="train_dir_path")
+        dpg.add_string_value(tag="test_dir_path")
+        dpg.add_string_value(default_value="Choose dataset directory", tag="train_dir_name")
+        dpg.add_string_value(default_value="Choose dataset directory", tag="test_dir_name")
 
         dpg.add_string_value(tag="csv_path")
         dpg.add_string_value(default_value="choose csv", tag="csv_name")
@@ -193,6 +201,7 @@ def gui():
                         with dpg.group(horizontal=True):
                             dpg.add_button(label="Browse", callback=lambda: dpg.show_item("dataset_browse"))
                             dpg.add_text(source="dataset_name")
+                            dpg.add_button(label='check', callback=check_dataset)
                             # dpg.add_button(label="Delete", callback=del_table)
                     with dpg.tab(label="Some plots"):
                         with dpg.child_window(label="Plot", border=False):
