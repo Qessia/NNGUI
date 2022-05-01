@@ -3,7 +3,9 @@ from pathlib import Path
 from math import sin
 import pandas as pd
 import numpy as np
-import nntemplate as nn
+import torch
+
+import nntemplate as mynn
 
 
 def print_me(sender):
@@ -11,7 +13,7 @@ def print_me(sender):
 
 
 def load_model():
-    pass
+    model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
 
 
 def del_model():
@@ -88,7 +90,7 @@ class DatasetBrowser(Browser):
 
 class ModelBrowser(Browser):
     def __init__(self, tag_child):
-        Browser.__init__(self, False, tag_child, {".hdf5": (255, 255, 0, 255)})
+        Browser.__init__(self, False, tag_child, {".pth": (255, 255, 0, 255)})
 
     def callback(self, sender, app_data):
         dpg.set_value("model_path", list(app_data['selections'].values())[0])
