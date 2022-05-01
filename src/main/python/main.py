@@ -3,10 +3,19 @@ from pathlib import Path
 from math import sin
 import pandas as pd
 import numpy as np
+import nntemplate as nn
 
 
 def print_me(sender):
     print(f"Menu Item: {sender}")
+
+
+def load_model():
+    pass
+
+
+def del_model():
+    pass
 
 
 def del_table():
@@ -82,7 +91,8 @@ class ModelBrowser(Browser):
         Browser.__init__(self, False, tag_child, {".hdf5": (255, 255, 0, 255)})
 
     def callback(self, sender, app_data):
-        pass
+        dpg.set_value("model_path", list(app_data['selections'].values())[0])
+        dpg.set_value("model_name", app_data['file_name'])
 
 
 class CSVBrowser(Browser):
@@ -117,6 +127,7 @@ def gui():
     dpg.bind_theme(tab_theme)
 
     CSVBrowser("csv_browse")
+    ModelBrowser("model_browse")
 
     with dpg.value_registry():
         dpg.add_string_value(default_value="Choose dataset directory", tag="dataset_dir")
@@ -124,7 +135,8 @@ def gui():
         dpg.add_string_value(tag="csv_path")
         dpg.add_string_value(default_value="choose csv", tag="csv_name")
 
-        dpg.add_string_value(default_value="Choose model file", tag="model_file")
+        dpg.add_string_value(tag="model_path")
+        dpg.add_string_value(default_value="choose model", tag="model_name")
 
     with dpg.window(tag="Primary Window"):
         dpg.bind_font(default_font)
@@ -157,7 +169,11 @@ def gui():
             with dpg.group(tag="tab group"):
                 with dpg.tab_bar():
                     with dpg.tab(label="Model"):
-                        dpg.add_text(source="")
+                        with dpg.group(horizontal=True):
+                            dpg.add_button(label="Browse", callback=lambda: dpg.show_item("model_browse"))
+                            dpg.add_button(label="Load model", callback=load_model)
+                            dpg.add_text(source="model_name")
+                            dpg.add_button(label="Delete model", callback=del_model)
 
                     with dpg.tab(label="Dataset", tag="csv_view"):
                         with dpg.group(horizontal=True):
