@@ -14,10 +14,6 @@ def print_me(sender):
     print(f"Menu Item: {sender}")
 
 
-def load_model():
-    mynn.model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
-
-
 def train():
     acc_val, loss_val, acc_train = mynn.fit(2, train_dl, val_dl)
 
@@ -33,8 +29,9 @@ def data_prepairing():
     val_dl = DataLoader(test_set, batch_size=128)
 
 
-def del_model():
-    pass
+def check_model():
+    text = str(mynn.model)
+    dpg.add_text(text, tag="model_text")
 
 
 def check_dataset():
@@ -122,6 +119,7 @@ class ModelBrowser(Browser):
     def callback(self, sender, app_data):
         dpg.set_value("model_path", list(app_data['selections'].values())[0])
         dpg.set_value("model_name", app_data['file_name'])
+        mynn.model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
 
 
 class CSVBrowser(Browser):
@@ -168,7 +166,7 @@ def gui():
         dpg.add_string_value(default_value="choose csv", tag="csv_name")
 
         dpg.add_string_value(tag="model_path")
-        dpg.add_string_value(default_value="choose model", tag="model_name")
+        dpg.add_string_value(default_value="(None is chosen)", tag="model_name")
 
     with dpg.window(tag="Primary Window"):
         dpg.bind_font(default_font)
@@ -201,11 +199,13 @@ def gui():
             with dpg.group(tag="tab group"):
                 with dpg.tab_bar():
                     with dpg.tab(label="Model"):
+                        dpg.add_text("Work with your model", tag="model_title")
+                        dpg.bind_item_font("model_title", second_font)
                         with dpg.group(horizontal=True):
-                            dpg.add_button(label="Browse", callback=lambda: dpg.show_item("model_browse"))
-                            dpg.add_button(label="Load model", callback=load_model)
+                            dpg.add_button(label="Load", callback=lambda: dpg.show_item("model_browse"))
                             dpg.add_text(source="model_name")
-                            dpg.add_button(label="Delete model", callback=del_model)
+                            dpg.add_button(label="View structure", callback=check_model)
+                        dpg.add_separator()
 
                     with dpg.tab(label="CSV", tag="csv_view"):
                         with dpg.group(horizontal=True):
