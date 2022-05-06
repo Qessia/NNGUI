@@ -31,8 +31,8 @@ def data_prepairing():
 
 def check_model():
     text = mynn.model
-    print(text)
-    # dpg.add_text(text, tag="model_text")
+    if text:
+        dpg.set_value("model_arch_text", text)
 
 
 def check_dataset():
@@ -168,6 +168,7 @@ def gui():
 
         dpg.add_string_value(tag="model_path")
         dpg.add_string_value(default_value="(None is chosen)", tag="model_name")
+        dpg.add_string_value(default_value="Here will be your architecture", tag="model_arch_text")
 
     with dpg.window(tag="Primary Window"):
         dpg.bind_font(default_font)
@@ -208,6 +209,7 @@ def gui():
                             dpg.add_button(label="View structure", callback=check_model)
                             dpg.add_button(label="Fit", callback=train)
                         dpg.add_separator()
+                        dpg.add_text(source="model_arch_text")
 
                     with dpg.tab(label="CSV", tag="csv_view"):
                         with dpg.group(horizontal=True):
