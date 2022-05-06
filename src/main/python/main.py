@@ -23,10 +23,10 @@ def data_prepairing():
     global val_dl
     train_dir = re.sub(r"2 files Selected\\", "", dpg.get_value("train_dir_path"))
     test_dir = re.sub(r"2 files Selected\\", "", dpg.get_value("test_dir_path"))
-    train_set = mynn.TrainSet(train_dir)
-    test_set = mynn.ValSet(train_dir, test_dir)
-    train_dl = DataLoader(train_set, batch_size=64, shuffle=True)
-    val_dl = DataLoader(test_set, batch_size=128)
+    mynn.train_set = mynn.TrainSet(train_dir)
+    mynn.test_set = mynn.ValSet(train_dir, test_dir)
+    train_dl = DataLoader(mynn.train_set, batch_size=mynn.BS, shuffle=True)
+    val_dl = DataLoader(mynn.test_set, batch_size=mynn.BS*2)
 
 
 def check_model():
@@ -121,6 +121,7 @@ class ModelBrowser(Browser):
         dpg.set_value("model_path", list(app_data['selections'].values())[0])
         dpg.set_value("model_name", app_data['file_name'])
         mynn.model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
+        # mynn.model.to(mynn.dev)
 
 
 class CSVBrowser(Browser):
