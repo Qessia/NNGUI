@@ -30,8 +30,9 @@ def data_prepairing():
 
 
 def check_model():
-    text = str(mynn.model)
-    dpg.add_text(text, tag="model_text")
+    text = mynn.model
+    print(text)
+    # dpg.add_text(text, tag="model_text")
 
 
 def check_dataset():
@@ -205,6 +206,7 @@ def gui():
                             dpg.add_button(label="Load", callback=lambda: dpg.show_item("model_browse"))
                             dpg.add_text(source="model_name")
                             dpg.add_button(label="View structure", callback=check_model)
+                            dpg.add_button(label="Fit", callback=mynn.fit)
                         dpg.add_separator()
 
                     with dpg.tab(label="CSV", tag="csv_view"):
