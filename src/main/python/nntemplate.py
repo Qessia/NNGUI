@@ -109,7 +109,7 @@ def loss_batch(model, xb, yb, opt=None):
     return loss.item(), len(xb), trueCount / len(yb)
 
 
-def fit(epochs, train_dl, valid_dl):
+def fit(epochs, lr, train_dl, valid_dl):
     print("Pognali")
     global progress
     global batch_counter
@@ -117,7 +117,7 @@ def fit(epochs, train_dl, valid_dl):
     batch_counter = 0
     progress = 0
     batches = math.ceil(len(train_set) / BS) * epochs
-    opt = optim.SGD(model.parameters(), lr=0.01)
+    opt = optim.SGD(model.parameters(), lr=lr)
     acc_val = []
     loss_val = []
     acc_train = []
@@ -141,3 +141,23 @@ def fit(epochs, train_dl, valid_dl):
         acc_train.append(accuracy_train)
 
     return acc_val, loss_val, acc_train
+
+
+def get_key(d, value):
+    for k, v in d.items():
+        if v == value:
+            return k
+
+
+def predict(img_path):
+    img = read_image(img_path)
+    img = img / 255.0
+    img = transform(img)
+    img = torch.unsqueeze(img, 0)
+
+    model.eval()
+    with torch.no_grad():
+        predict = model(img)
+        predict = torch.argmax(predict)
+        predict = get_key(test_set.class_id, predict)
+    return predict
