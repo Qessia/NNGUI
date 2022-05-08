@@ -14,8 +14,12 @@ def print_me(sender):
     print(f"Menu Item: {sender}")
 
 
-def train():
+def fit():
     acc_val, loss_val, acc_train = mynn.fit(2, train_dl, val_dl)
+
+
+def predict():
+    pass
 
 
 def data_prepairing():
@@ -40,11 +44,6 @@ def check_dataset():
     print(dpg.get_value("test_dir_path"))
 
 
-def del_table():
-    if dpg.does_item_exist("csv_table"):
-        dpg.delete_item("csv_table")
-
-
 def openfile(sender, app_data):
     # print("Sender: ", sender)
     print("App Data: ", app_data)
@@ -55,21 +54,43 @@ def openfile(sender, app_data):
     f.close()
 
 
-def build_csv(sender, app_data):
-    csv = pd.read_csv(dpg.get_value("csv_path"))
-    csv.index = np.arange(len(csv))
+def csv_surfer(_, x):
+    dpg.set_value("csv_index_cnt", x)
     if dpg.does_item_exist("csv_table"):
         dpg.delete_item("csv_table")
     with dpg.table(parent="csv_view", header_row=True, resizable=True, policy=dpg.mvTable_SizingStretchProp,
                    borders_outerH=True, borders_innerV=True, borders_innerH=True, borders_outerV=True,
                    tag="csv_table", row_background=True, scrollX=True, scrollY=True):
 
-        # add header columns
-        for i in csv.columns:
+        dpg.add_table_column(label="")
+        for i in csv.columns[1:]:
             dpg.add_table_column(label=f"{i}({csv[i].nunique()})")
 
         # add rows and cells
-        for i in csv.index:
+        start = dpg.get_value("csv_index_cnt")
+        for i in csv.index[start:(start+dpg.get_value("csv_step"))]:
+            with dpg.table_row(parent="csv_table"):
+                for j in csv.columns:
+                    dpg.add_text(csv.at[i, j])
+
+
+def build_csv(sender, app_data):
+    global csv
+    csv = pd.read_csv(dpg.get_value("csv_path"))
+    # csv['index'] = np.arange(len(csv))
+    csv.insert(0, 'index', np.arange(1, len(csv) + 1))
+    if dpg.does_item_exist("csv_table"):
+        dpg.delete_item("csv_table")
+    with dpg.table(parent="csv_view", header_row=True, resizable=True, policy=dpg.mvTable_SizingStretchProp,
+                   borders_outerH=True, borders_innerV=True, borders_innerH=True, borders_outerV=True,
+                   tag="csv_table", row_background=True, scrollX=True, scrollY=True):
+
+        dpg.add_table_column(label="")
+        for i in csv.columns[1:]:
+            dpg.add_table_column(label=f"{i}({csv[i].nunique()})")
+
+        # add rows and cells
+        for i in csv.index[:dpg.get_value("csv_step")]:
             with dpg.table_row(parent="csv_table"):
                 for j in csv.columns:
                     dpg.add_text(csv.at[i, j])
@@ -165,10 +186,16 @@ def gui():
 
         dpg.add_string_value(tag="csv_path")
         dpg.add_string_value(default_value="choose csv", tag="csv_name")
+        dpg.add_int_value(tag="csv_index_cnt")
+        dpg.add_int_value(tag="csv_step", default_value=20)
 
         dpg.add_string_value(tag="model_path")
-        dpg.add_string_value(default_value="(None is chosen)", tag="model_name")
+        dpg.add_string_value(default_value="(None)", tag="model_name")
         dpg.add_string_value(default_value="Here will be your architecture", tag="model_arch_text")
+        dpg.add_int_value(default_value=10, tag="model_epochs")
+        dpg.add_float_value(default_value=0.05, tag="model_lr")
+
+        dpg.add_float_value(tag="bar_val", default_value=0.0)
 
     with dpg.window(tag="Primary Window"):
         dpg.bind_font(default_font)
@@ -196,18 +223,27 @@ def gui():
                 dpg.bind_item_font("Title", second_font)
                 dpg.add_text("Just text")
                 dpg.add_separator()
-                dpg.add_progress_bar(label="progress", default_value=0.75)
+                dpg.add_progress_bar(label="bar", default_value=0.0, source="bar_val")
+                dpg.add_button(label="Fit", callback=fit)
+                dpg.add_button(label="Predict", callback=predict)
 
             with dpg.group(tag="tab group"):
                 with dpg.tab_bar():
                     with dpg.tab(label="Model"):
-                        dpg.add_text("Work with your model", tag="model_title")
+                        dpg.add_text("Model configuration", tag="model_title")
                         dpg.bind_item_font("model_title", second_font)
                         with dpg.group(horizontal=True):
                             dpg.add_button(label="Load", callback=lambda: dpg.show_item("model_browse"))
                             dpg.add_text(source="model_name")
                             dpg.add_button(label="View structure", callback=check_model)
-                            dpg.add_button(label="Fit", callback=train)
+
+                            dpg.add_text("Epochs:")
+                            dpg.add_input_int(source="model_epochs", on_enter=True, width=100,
+                                              callback=lambda _, x: dpg.set_value("model_epochs", x))
+                            dpg.add_text("Learning rate:")
+                            dpg.add_input_float(source="model_lr", on_enter=True, width=110, step=0.01,
+                                               callback=lambda _, x: dpg.set_value("model_lr", x))
+
                         dpg.add_separator()
                         dpg.add_text(source="model_arch_text")
 
@@ -216,7 +252,11 @@ def gui():
                             dpg.add_button(label="Browse", callback=lambda: dpg.show_item("csv_browse"))
                             dpg.add_button(label="Build", callback=build_csv)
                             dpg.add_text(source="csv_name")
-                            dpg.add_button(label="Delete", callback=del_table)
+                            dpg.add_input_int(step=dpg.get_value("csv_step"), width=150, on_enter=True,
+                                              source="csv_index_cnt", default_value=1, callback=csv_surfer)
+                            dpg.add_text("display: ")
+                            dpg.add_input_int(label="rows", width=100, source="csv_step",
+                                              callback=lambda _, x: dpg.set_value("csv_step", x))
                     with dpg.tab(label="Dataset", tag="dataset"):
                         with dpg.group(horizontal=True):
                             dpg.add_button(label="Browse", callback=lambda: dpg.show_item("dataset_browse"))
