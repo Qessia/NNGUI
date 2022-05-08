@@ -19,7 +19,8 @@ def fit():
 
 
 def predict():
-    pass
+    pred = mynn.predict(dpg.get_value("image_path"))
+    print(pred)
 
 
 def data_prepairing():
