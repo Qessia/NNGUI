@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from pathlib import Path
 import numpy as np
+import math
 
 import re
 import torch.nn.functional as F
@@ -13,7 +14,17 @@ from torchvision.io import read_image
 from torchvision import transforms
 
 global model
+global BS
+global test_set
+global train_set
+global progress
+BS = 64
 loss_func = F.cross_entropy
+
+print(torch.cuda.is_available())
+
+# dev = torch.device(
+#     "cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -74,6 +85,9 @@ class ValSet(Dataset):
 
 
 def loss_batch(model, xb, yb, opt=None):
+    global batch_counter
+    global progress
+    global batches
     predict = model(xb)
     loss = loss_func(predict, yb)
     predict = [torch.argmax(pred) for pred in predict]
@@ -87,27 +101,40 @@ def loss_batch(model, xb, yb, opt=None):
         loss.backward()
         opt.step()
         opt.zero_grad()
+    batch_counter += 1
+    progress = batch_counter/batches
 
+
+    print(progress)
     return loss.item(), len(xb), trueCount / len(yb)
 
 
 def fit(epochs, train_dl, valid_dl):
+    print("Pognali")
+    global progress
+    global batch_counter
+    global batches
+    batch_counter = 0
+    progress = 0
+    batches = math.ceil(len(train_set) / BS) * epochs
     opt = optim.SGD(model.parameters(), lr=0.01)
     acc_val = []
     loss_val = []
     acc_train = []
     for epoch in range(epochs):
         model.train()
-        _, numsT, acc_train = zip(*[loss_batch(model, xb.cuda(), yb.cuda(), opt) for xb, yb in train_dl])
+        _, numsT, acc_train = zip(*[loss_batch(model, xb, yb, opt) for xb, yb in train_dl])
 
         model.eval()
         with torch.no_grad():
             losses, nums, acc_val = zip(
-                *[loss_batch(model, xb.cuda(), yb.cuda()) for xb, yb in valid_dl]
+                *[loss_batch(model, xb, yb) for xb, yb in valid_dl]
             )
         val_loss = np.sum(np.multiply(losses, nums)) / np.sum(nums)
         accuracy_val = np.sum(np.multiply(acc_val, nums)) / np.sum(nums)
         accuracy_train = np.sum(np.multiply(acc_train, numsT)) / np.sum(numsT)
+
+        # progress = epoch/epochs
 
         acc_val.append(accuracy_val)
         loss_val.append(val_loss)
