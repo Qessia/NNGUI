@@ -100,6 +100,16 @@ def print_val(sender):
     print(dpg.get_value(sender))
 
 
+def change_step(_, x):
+    dpg.set_value("csv_step", x)
+    if dpg.does_item_exist("csv_surfer"):
+        dpg.delete_item("csv_surfer")
+    dpg.add_input_int(step=dpg.get_value("csv_step"), width=150, on_enter=False,
+                      source="csv_index_cnt", default_value=1, callback=csv_surfer,
+                      before="text_display", tag="csv_surfer", parent="csv_view_group")
+
+
+
 class Browser:
     def __init__(self, dir_sel, tag_parent, exts):
         with dpg.file_dialog(directory_selector=dir_sel, show=False, callback=self.callback, tag=tag_parent,
@@ -126,12 +136,21 @@ class DatasetBrowser(Browser):
         Browser.__init__(self, True, tag_child, {".*": (0, 255, 0, 255)})
 
     def callback(self, sender, app_data):
-        # print(app_data)
+        print(app_data)
         dpg.set_value("train_dir_path", list(app_data['selections'].values())[1])
         dpg.set_value("test_dir_path", list(app_data['selections'].values())[0])
         dpg.set_value("train_dir_name", app_data['file_name'])  # TODO!!!
         dpg.set_value("test_dir_name", app_data['file_name'])  # TODO!!!
         data_prepairing()
+
+
+class ImageBrowser(Browser):
+    def __init__(self, tag_child):
+        Browser.__init__(self, False, tag_child, {".jpg": (0, 255, 0, 255), ".png": (0, 255, 0, 255)})
+
+    def callback(self, sender, app_data):
+        dpg.set_value("image_path", list(app_data['selections'].values())[0])
+        dpg.set_value("image_name", app_data['file_name'])
 
 
 class ModelBrowser(Browser):
@@ -178,12 +197,16 @@ def gui():
     CSVBrowser("csv_browse")
     ModelBrowser("model_browse")
     DatasetBrowser("dataset_browse")
+    ImageBrowser("image_browse")
 
     with dpg.value_registry():
         dpg.add_string_value(tag="train_dir_path")
         dpg.add_string_value(tag="test_dir_path")
-        dpg.add_string_value(default_value="Choose dataset directory", tag="train_dir_name")
-        dpg.add_string_value(default_value="Choose dataset directory", tag="test_dir_name")
+        dpg.add_string_value(default_value="(None)", tag="train_dir_name")
+        dpg.add_string_value(default_value="(None)", tag="test_dir_name")
+
+        dpg.add_string_value(default_value="(None)", tag="image_name")
+        dpg.add_string_value(tag="image_path")
 
         dpg.add_string_value(tag="csv_path")
         dpg.add_string_value(default_value="choose csv", tag="csv_name")
@@ -226,7 +249,9 @@ def gui():
                 dpg.add_separator()
                 dpg.add_progress_bar(label="bar", default_value=0.0, source="bar_val")
                 dpg.add_button(label="Fit", callback=fit)
-                dpg.add_button(label="Predict", callback=predict)
+                with dpg.group(horizontal=True):
+                    dpg.add_button(label="Load image", callback=lambda: dpg.show_item("image_browse"))
+                    dpg.add_button(label="Predict", callback=predict)
 
             with dpg.group(tag="tab group"):
                 with dpg.tab_bar():
@@ -249,19 +274,27 @@ def gui():
                         dpg.add_text(source="model_arch_text")
 
                     with dpg.tab(label="CSV", tag="csv_view"):
-                        with dpg.group(horizontal=True):
-                            dpg.add_button(label="Browse", callback=lambda: dpg.show_item("csv_browse"))
-                            dpg.add_button(label="Build", callback=build_csv)
-                            dpg.add_text(source="csv_name")
-                            dpg.add_input_int(step=dpg.get_value("csv_step"), width=150, on_enter=True,
-                                              source="csv_index_cnt", default_value=1, callback=csv_surfer)
-                            dpg.add_text("display: ")
-                            dpg.add_input_int(label="rows", width=100, source="csv_step",
-                                              callback=lambda _, x: dpg.set_value("csv_step", x))
+                        dpg.add_text("Watch your CSV", tag="csv_title")
+                        dpg.bind_item_font("csv_title", second_font)
+                        with dpg.group(horizontal=True, tag="csv_view_group"):
+                            dpg.add_button(label="Browse", callback=lambda: dpg.show_item("csv_browse"), parent="csv_view_group")
+                            dpg.add_button(label="Build", callback=build_csv, parent="csv_view_group")
+                            dpg.add_text(source="csv_name", parent="csv_view_group")
+                            dpg.add_input_int(step=dpg.get_value("csv_step"), width=150, on_enter=False,
+                                              source="csv_index_cnt", default_value=1, callback=csv_surfer,
+                                              tag="csv_surfer", parent="csv_view_group")
+                            dpg.add_text("display: ", parent="csv_view_group", tag="text_display")
+                            dpg.add_input_int(step=10, label="rows", width=100, source="csv_step",
+                                              callback=change_step, parent="csv_view_group")
                     with dpg.tab(label="Dataset", tag="dataset"):
+                        dpg.add_text("Watch your dataset", tag="dataset_title")
+                        dpg.bind_item_font("dataset_title", second_font)
                         with dpg.group(horizontal=True):
                             dpg.add_button(label="Browse", callback=lambda: dpg.show_item("dataset_browse"))
-                            dpg.add_text(source="dataset_name")
+                            dpg.add_button(label="train: ", enabled=False)
+                            dpg.add_text(source="train_dir_name")
+                            dpg.add_button(label="test: ", enabled=False)
+                            dpg.add_text(source="test_dir_name")
                             dpg.add_button(label='check', callback=check_dataset)
                             # dpg.add_button(label="Delete", callback=del_table)
                     with dpg.tab(label="Some plots"):
