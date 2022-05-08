@@ -15,8 +15,6 @@ def print_me(sender):
 
 
 def fit():
-    print(dpg.get_value("model_epochs"))
-    print(dpg.get_value("model_lr"))
     acc_val, loss_val, acc_train = mynn.fit(dpg.get_value("model_epochs"), dpg.get_value("model_lr"), train_dl, val_dl)
 
 
