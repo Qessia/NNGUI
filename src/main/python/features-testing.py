@@ -1,34 +1,18 @@
-from time import time
-from collections import deque
-from tornado.ioloop import IOLoop
+import dearpygui.dearpygui as dpg
 
-current = deque()
+dpg.create_context()
 
-class sleep(object):
+width, height, channels, data = dpg.load_image("..\\..\\file_samples\\gosling-1.jpg")
 
-    def __init__(self, timeout):
-        self.deadline = time() + timeout
+with dpg.texture_registry(show=True):
+    dpg.add_static_texture(width, height, data, tag="texture_tag")
 
-    def __await__(self):
-        def swith_to(coro):
-            current.append(coro)
-            coro.send(time())
-        IOLoop.instance().add_timeout(self.deadline, swith_to, current[0])
-        current.pop()
-        return (yield)
+with dpg.window(label="Tutorial"):
+    dpg.add_image("texture_tag")
 
-def coroutine_start(run, *args, **kwargs):
-    coro = run(*args, **kwargs)
-    current.append(coro)
-    coro.send(None)
 
-if __name__ == '__main__':
-
-    async def hello(name, timeout):
-        while True:
-            now = await sleep(timeout)
-            print("Hello, {}!\tts: {}".format(name, now))
-
-    coroutine_start(hello, "Friends", 1.0)
-    coroutine_start(hello, "World", 2.5)
-    IOLoop.instance().start()
+dpg.create_viewport(title='Custom Title', width=800, height=600)
+dpg.setup_dearpygui()
+dpg.show_viewport()
+dpg.start_dearpygui()
+dpg.destroy_context()

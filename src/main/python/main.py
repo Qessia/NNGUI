@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 import re
+from os.path import basename
 
 import nntemplate as mynn
 
@@ -26,10 +27,10 @@ def predict():
 def data_prepairing():
     global train_dl
     global val_dl
-    train_dir = re.sub(r"2 files Selected\\", "", dpg.get_value("train_dir_path"))
-    test_dir = re.sub(r"2 files Selected\\", "", dpg.get_value("test_dir_path"))
-    mynn.train_set = mynn.TrainSet(train_dir)
-    mynn.test_set = mynn.ValSet(train_dir, test_dir)
+    train_dir = dpg.get_value("train_dir_path")
+    test_dir = dpg.get_value("test_dir_path")
+    mynn.train_set = mynn.TrainSet(dpg.get_value("train_dir_path"))
+    mynn.test_set = mynn.ValSet(train_dir, dpg.get_value("test_dir_path"))
     train_dl = DataLoader(mynn.train_set, batch_size=mynn.BS, shuffle=True)
     val_dl = DataLoader(mynn.test_set, batch_size=mynn.BS*2)
 
@@ -110,7 +111,6 @@ def change_step(_, x):
                       before="text_display", tag="csv_surfer", parent="csv_view_group")
 
 
-
 class Browser:
     def __init__(self, dir_sel, tag_parent, exts):
         with dpg.file_dialog(directory_selector=dir_sel, show=False, callback=self.callback, tag=tag_parent,
@@ -119,29 +119,20 @@ class Browser:
             for ext in exts:
                 dpg.add_file_extension(ext, color=exts[ext])
 
-            with dpg.group(horizontal=True):
-                dpg.add_button(label="fancy file dialog")
-                dpg.add_button(label="file")
-                dpg.add_button(label="dialog")
-            with dpg.child_window(height=100):
-                dpg.add_selectable(label="bookmark 1")
-                dpg.add_selectable(label="bookmark 2")
-                dpg.add_selectable(label="bookmark 3")
-
     def callback(self, *args):
         pass
 
 
 class DatasetBrowser(Browser):
-    def __init__(self, tag_child):
-        Browser.__init__(self, True, tag_child, {".*": (0, 255, 0, 255)})
+    def __init__(self, datatype):
+        Browser.__init__(self, True, f"{datatype}_browse", {".*": (0, 255, 0, 255)})
+        self.datatype = datatype
 
     def callback(self, sender, app_data):
         print(app_data)
-        dpg.set_value("train_dir_path", list(app_data['selections'].values())[1])
-        dpg.set_value("test_dir_path", list(app_data['selections'].values())[0])
-        dpg.set_value("train_dir_name", app_data['file_name'])  # TODO!!!
-        dpg.set_value("test_dir_name", app_data['file_name'])  # TODO!!!
+
+        dpg.set_value(f"{self.datatype}_dir_path", app_data['file_path_name'])
+        dpg.set_value(f"{self.datatype}_dir_name", basename(app_data['file_path_name']))  # TODO!!!
         data_prepairing()
 
 
@@ -197,7 +188,8 @@ def gui():
 
     CSVBrowser("csv_browse")
     ModelBrowser("model_browse")
-    DatasetBrowser("dataset_browse")
+    DatasetBrowser("train")
+    DatasetBrowser("test")
     ImageBrowser("image_browse")
 
     with dpg.value_registry():
@@ -291,13 +283,11 @@ def gui():
                         dpg.add_text("Watch your dataset", tag="dataset_title")
                         dpg.bind_item_font("dataset_title", second_font)
                         with dpg.group(horizontal=True):
-                            dpg.add_button(label="Browse", callback=lambda: dpg.show_item("dataset_browse"))
-                            dpg.add_button(label="train: ", enabled=False)
+                            dpg.add_button(label="train: ", callback=lambda: dpg.show_item("train_browse"))
                             dpg.add_text(source="train_dir_name")
-                            dpg.add_button(label="test: ", enabled=False)
+                            dpg.add_button(label="test: ", callback=lambda: dpg.show_item("test_browse"))
                             dpg.add_text(source="test_dir_name")
                             dpg.add_button(label='check', callback=check_dataset)
-                            # dpg.add_button(label="Delete", callback=del_table)
                     with dpg.tab(label="Some plots"):
                         with dpg.child_window(label="Plot", border=False):
                             sindatax = []
