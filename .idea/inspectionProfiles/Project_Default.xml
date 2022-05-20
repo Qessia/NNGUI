@@ -1,0 +1,16 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="k1" />
+          <option value="object.drop" />
+          <option value="object.columns" />
+          <option value="object.set_index" />
+          <option value="sklearn.ensemble.RandomForestClassifier" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
