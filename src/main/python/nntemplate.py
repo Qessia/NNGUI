@@ -21,7 +21,7 @@ global progress
 BS = 64
 loss_func = F.cross_entropy
 
-print(torch.cuda.is_available())
+# print(torch.cuda.is_available())
 
 # dev = torch.device(
 #     "cuda") if torch.cuda.is_available() else torch.device("cpu")
