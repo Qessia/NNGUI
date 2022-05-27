@@ -11,7 +11,7 @@ from os.path import basename
 import nntemplate as mynn
 
 
-# some changes
+# some more changes
 
 def print_me(sender):
     print(f"Menu Item: {sender}")
