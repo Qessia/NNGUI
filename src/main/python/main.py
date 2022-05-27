@@ -143,6 +143,10 @@ class ImageBrowser(Browser):
     def callback(self, sender, app_data):
         dpg.set_value("image_path", list(app_data['selections'].values())[0])
         dpg.set_value("image_name", app_data['file_name'])
+        if dpg.does_item_exist("image_button"):
+            dpg.delete_item("image_button")
+        dpg.add_button(label=dpg.get_value("image_name"), callback=lambda: dpg.show_item("image_browse"),
+                       parent="predict_group", tag="image_button", before="predict_button")
 
 
 class ModelBrowser(Browser):
@@ -198,7 +202,7 @@ def gui():
         dpg.add_string_value(default_value="(None)", tag="train_dir_name")
         dpg.add_string_value(default_value="(None)", tag="test_dir_name")
 
-        dpg.add_string_value(default_value="(None)", tag="image_name")
+        dpg.add_string_value(default_value="Load image", tag="image_name")
         dpg.add_string_value(tag="image_path")
 
         dpg.add_string_value(tag="csv_path")
@@ -238,13 +242,18 @@ def gui():
             with dpg.child_window(pos=[0, 30], label="Settings", width=300, border=True):
                 dpg.add_text("NNView", tag="Title")
                 dpg.bind_item_font("Title", second_font)
-                dpg.add_text("Just text")
+                dpg.add_text("Work with your NN easily!")
                 dpg.add_separator()
-                dpg.add_progress_bar(label="bar", default_value=0.0, source="bar_val")
-                dpg.add_button(label="Fit", callback=fit)
+                dpg.add_text("Fit progress tracking")
                 with dpg.group(horizontal=True):
-                    dpg.add_button(label="Load image", callback=lambda: dpg.show_item("image_browse"))
-                    dpg.add_button(label="Predict", callback=predict)
+                    dpg.add_button(label="Fit", callback=fit)
+                    dpg.add_progress_bar(label="bar", default_value=0.0, source="bar_val")
+                dpg.add_separator()
+                dpg.add_text("Image predict")
+                with dpg.group(horizontal=True, tag="predict_group"):
+                    dpg.add_button(label=dpg.get_value("image_name"), callback=lambda: dpg.show_item("image_browse"),
+                                   parent="predict_group", tag="image_button")
+                    dpg.add_button(label="Predict", callback=predict, parent="predict_group", tag="predict_button")
 
             with dpg.group(tag="tab group"):
                 with dpg.tab_bar():
@@ -261,7 +270,7 @@ def gui():
                                               callback=lambda _, x: dpg.set_value("model_epochs", x))
                             dpg.add_text("Learning rate:")
                             dpg.add_input_float(source="model_lr", on_enter=True, width=110, step=0.01,
-                                               callback=lambda _, x: dpg.set_value("model_lr", x))
+                                                callback=lambda _, x: dpg.set_value("model_lr", x))
 
                         dpg.add_separator()
                         dpg.add_text(source="model_arch_text")
