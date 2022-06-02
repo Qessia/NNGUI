@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-import re
 from os.path import basename
 
 import nntemplate as mynn
@@ -18,6 +17,7 @@ def print_me(sender):
 
 
 def fit():
+    dpg.set_value("output", "")
     acc_val, loss_val, acc_train = mynn.fit(dpg.get_value("model_epochs"), dpg.get_value("model_lr"), train_dl, val_dl)
 
 
@@ -204,6 +204,8 @@ def gui():
         dpg.add_string_value(default_value="(None)", tag="train_dir_name")
         dpg.add_string_value(default_value="(None)", tag="test_dir_name")
 
+        dpg.add_string_value(tag="output", default_value="Here will be your output")
+
         dpg.add_string_value(default_value="Load image", tag="image_name")
         dpg.add_string_value(tag="image_path")
 
@@ -249,7 +251,7 @@ def gui():
                 dpg.add_text("Fit progress tracking")
                 with dpg.group(horizontal=True):
                     dpg.add_button(label="Fit", callback=fit)
-                    dpg.add_progress_bar(label="bar", default_value=0.0, source="bar_val")
+                    dpg.add_progress_bar(label="bar", default_value=0.0, width=250, source="bar_val")
                 dpg.add_separator()
                 dpg.add_text("Image predict")
                 with dpg.group(horizontal=True, tag="predict_group"):
@@ -276,9 +278,17 @@ def gui():
 
                         dpg.add_separator()
                         dpg.add_text(source="model_arch_text")
+                        dpg.add_separator()
+
+                    with dpg.tab(label="Output"):
+                        dpg.add_text("View output", tag="output_title")
+                        dpg.bind_item_font("output_title", second_font)
+                        dpg.add_button(label="Clear", callback=lambda: dpg.set_value("output", ""))
+                        dpg.add_separator()
+                        dpg.add_text(source="output")
 
                     with dpg.tab(label="CSV", tag="csv_view"):
-                        dpg.add_text("Watch your CSV", tag="csv_title")
+                        dpg.add_text("CSV Viewer", tag="csv_title")
                         dpg.bind_item_font("csv_title", second_font)
                         with dpg.group(horizontal=True, tag="csv_view_group"):
                             dpg.add_button(label="Browse", callback=lambda: dpg.show_item("csv_browse"), parent="csv_view_group")
@@ -291,7 +301,7 @@ def gui():
                             dpg.add_input_int(step=10, label="rows", width=100, source="csv_step",
                                               callback=change_step, parent="csv_view_group")
                     with dpg.tab(label="Dataset", tag="dataset"):
-                        dpg.add_text("Watch your dataset", tag="dataset_title")
+                        dpg.add_text("Dataset viewer", tag="dataset_title")
                         dpg.bind_item_font("dataset_title", second_font)
                         with dpg.group(horizontal=True):
                             dpg.add_button(label="train: ", callback=lambda: dpg.show_item("train_browse"))
@@ -300,6 +310,8 @@ def gui():
                             dpg.add_text(source="test_dir_name")
                             dpg.add_button(label='check', callback=check_dataset)
                     with dpg.tab(label="Some plots"):
+                        dpg.add_text("Metrics plotting", tag="plot_title")
+                        dpg.bind_item_font("plot_title", second_font)
                         with dpg.child_window(label="Plot", border=False):
                             sindatax = []
                             sindatay = []

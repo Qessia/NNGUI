@@ -12,6 +12,7 @@ from torchvision.io import read_image
 
 # from torchvision import models
 from torchvision import transforms
+from dearpygui.dearpygui import set_value, get_value
 
 global model
 global BS
@@ -103,9 +104,11 @@ def loss_batch(model, xb, yb, opt=None):
         opt.zero_grad()
     batch_counter += 1
     progress = batch_counter/batches
+    set_value("bar_val", progress)
 
 
     print(progress)
+    set_value("output", (get_value("output") + str(progress) + '\n'))
     return loss.item(), len(xb), trueCount / len(yb)
 
 
