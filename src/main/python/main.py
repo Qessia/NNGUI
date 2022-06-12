@@ -10,7 +10,10 @@ from os.path import basename
 import nntemplate as mynn
 
 
-# some more changes ,d,fdl,,d
+"""
+Hello there!
+"""
+
 
 def print_me(sender):
     print(f"Menu Item: {sender}")
@@ -19,6 +22,7 @@ def print_me(sender):
 def fit():
     dpg.set_value("output", "")
     acc_val, loss_val, acc_train = mynn.fit(dpg.get_value("model_epochs"), dpg.get_value("model_lr"), train_dl, val_dl)
+    dpg.set_value("output", (dpg.get_value("output") + str(acc_val) + str(loss_val) + str(acc_train) + '\n'))
 
 
 def predict():
@@ -49,7 +53,6 @@ def check_dataset():
 
 
 def openfile(sender, app_data):
-    # print("Sender: ", sender)
     print("App Data: ", app_data)
     f = open(str(list(app_data['selections'].values())[0]), mode='r')
 
@@ -70,7 +73,6 @@ def csv_surfer(_, x):
         for i in csv.columns[1:]:
             dpg.add_table_column(label=f"{i}({csv[i].nunique()})")
 
-        # add rows and cells
         start = dpg.get_value("csv_index_cnt")
         for i in csv.index[start:(start+dpg.get_value("csv_step"))]:
             with dpg.table_row(parent="csv_table"):
@@ -81,7 +83,6 @@ def csv_surfer(_, x):
 def build_csv(sender, app_data):
     global csv
     csv = pd.read_csv(dpg.get_value("csv_path"))
-    # csv['index'] = np.arange(len(csv))
     csv.insert(0, 'index', np.arange(1, len(csv) + 1))
     if dpg.does_item_exist("csv_table"):
         dpg.delete_item("csv_table")
@@ -93,7 +94,6 @@ def build_csv(sender, app_data):
         for i in csv.columns[1:]:
             dpg.add_table_column(label=f"{i}({csv[i].nunique()})")
 
-        # add rows and cells
         for i in csv.index[:dpg.get_value("csv_step")]:
             with dpg.table_row(parent="csv_table"):
                 for j in csv.columns:
@@ -114,8 +114,15 @@ def change_step(_, x):
 
 
 class Browser:
-    def __init__(self, dir_sel, tag_parent, exts):
-        with dpg.file_dialog(directory_selector=dir_sel, show=False, callback=self.callback, tag=tag_parent,
+    def __init__(self, dir_sel, tag, exts):
+        """
+        Basic browser window class describing directory/folder selector
+        Don't use it separately, only for inheritance!
+        :param dir_sel: specify, whether it's directory or file selector
+        :param tag: dpg item tag
+        :param exts: searchable extensions
+        """
+        with dpg.file_dialog(directory_selector=dir_sel, show=False, callback=self.callback, tag=tag,
                              width=720, height=480, default_path=str(Path('..', '..', 'file_samples'))):
             dpg.add_file_extension("", color=(150, 255, 150, 255))
             for ext in exts:
@@ -159,7 +166,6 @@ class ModelBrowser(Browser):
         dpg.set_value("model_path", list(app_data['selections'].values())[0])
         dpg.set_value("model_name", app_data['file_name'])
         mynn.model = torch.load(dpg.get_value("model_path"), map_location=torch.device('cpu'))
-        # mynn.model.to(mynn.dev)
 
 
 class CSVBrowser(Browser):
@@ -168,11 +174,8 @@ class CSVBrowser(Browser):
 
     def callback(self, sender, app_data):
         print("App Data: ", app_data)
-        # f = open(str(list(app_data['selections'].values())[0]), mode='r')
-        # content = f.read()
         dpg.set_value("csv_path", list(app_data['selections'].values())[0])
         dpg.set_value("csv_name", app_data['file_name'])
-        # f.close()
 
 
 def gui():
@@ -186,8 +189,6 @@ def gui():
     # THEME DESCRIPTION
     with dpg.theme() as tab_theme:
         with dpg.theme_component(dpg.mvAll):
-            # dpg.add_theme_color(dpg.mvThemeCol_WindowBg, (255, 140, 23), category=dpg.mvThemeCat_Core)
-            # dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (255, 0, 0), category=dpg.mvThemeCat_Core)
             dpg.add_theme_style(dpg.mvStyleVar_TabRounding, 0, category=dpg.mvThemeCat_Core)
 
     dpg.bind_theme(tab_theme)
@@ -240,7 +241,6 @@ def gui():
                 dpg.add_checkbox(label="Pick Me", callback=print_me)
                 dpg.add_button(label="Press Me", callback=print_me)
                 dpg.add_color_picker(label="Color Me", callback=print_me)
-        # dpg.add_text("")
 
         with dpg.group(horizontal=True):
             with dpg.child_window(pos=[0, 30], label="Settings", width=300, border=True):
@@ -334,7 +334,6 @@ def gui():
 def gui_init():
     dpg.create_viewport(title='NNView', width=1080, height=720)
     dpg.set_viewport_small_icon(str(Path('..', '..', 'assets', 'connect_icon_161112.ico')))
-    # dpg.set_viewport_large_icon(str(Path('..', '..', 'assets', 'connect_icon_161112.ico')))
 
     dpg.setup_dearpygui()
     dpg.show_viewport()

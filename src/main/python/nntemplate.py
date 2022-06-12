@@ -10,7 +10,6 @@ import torch.nn.functional as F
 from torch import optim
 from torchvision.io import read_image
 
-# from torchvision import models
 from torchvision import transforms
 from dearpygui.dearpygui import set_value, get_value
 
@@ -22,8 +21,6 @@ global progress
 BS = 64
 loss_func = F.cross_entropy
 
-# print(torch.cuda.is_available())
-
 # dev = torch.device(
 #     "cuda") if torch.cuda.is_available() else torch.device("cpu")
 
@@ -34,8 +31,11 @@ transform = transforms.Compose([
 
 
 class TrainSet(Dataset):
-
     def __init__(self, dir):
+        """
+        Trainset class constructor
+        :param dir: path to trainset directory
+        """
         self.train_dir = Path(dir)
         self.train_files_path = sorted(list(self.train_dir.rglob('*.jpg')))  # пути к файлам трейна
         self.train_class_names = [path.parent.name for path in self.train_files_path]  # имена классов для файлов трейна
@@ -45,9 +45,18 @@ class TrainSet(Dataset):
         self.class_id = {classes[i]: i for i in range(len(classes))}  # словарик с класс айди
 
     def __len__(self):
+        """
+        get length of trainset
+        :return: length
+        """
         return len(self.train_files_path)
 
     def __getitem__(self, index):
+        """
+        get single item
+        :param index:
+        :return:
+        """
         img = read_image(str(self.train_files_path[index]))
         img = img / 255.0
         img = transform(img)
@@ -86,6 +95,14 @@ class ValSet(Dataset):
 
 
 def loss_batch(model, xb, yb, opt=None):
+    """
+    get loss value among batch
+    :param model: model
+    :param xb: predicts
+    :param yb: labels
+    :param opt: optimizer
+    :return: loss
+    """
     global batch_counter
     global progress
     global batches
@@ -113,6 +130,14 @@ def loss_batch(model, xb, yb, opt=None):
 
 
 def fit(epochs, lr, train_dl, valid_dl):
+    """
+    fit the NN
+    :param epochs: amount of epochs
+    :param lr: learning rate
+    :param train_dl: dataloader for train
+    :param valid_dl: dataloader for validation
+    :return: validation accuracy, validation loss, train accuracy
+    """
     print("Pognali")
     global progress
     global batch_counter
@@ -136,8 +161,6 @@ def fit(epochs, lr, train_dl, valid_dl):
         val_loss = np.sum(np.multiply(losses, nums)) / np.sum(nums)
         accuracy_val = np.sum(np.multiply(acc_val, nums)) / np.sum(nums)
         accuracy_train = np.sum(np.multiply(acc_train, numsT)) / np.sum(numsT)
-
-        # progress = epoch/epochs
 
         acc_val.append(accuracy_val)
         loss_val.append(val_loss)
