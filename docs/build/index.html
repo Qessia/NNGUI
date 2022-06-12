@@ -42,14 +42,14 @@
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="nntemplate.TrainSet.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.TrainSet.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Just a docstring
-:param dir: just a parameter</p>
+<dd><p>Trainset class constructor
+:param dir: path to trainset directory</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nntemplate.TrainSet.__len__">
 <span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.TrainSet.__len__" title="Permalink to this definition">¶</a></dt>
-<dd><p>get length
+<dd><p>get length of trainset
 :return: length</p>
 </dd></dl>
 
@@ -63,6 +63,28 @@
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.ValSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nntemplate.fit">
+<span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_dl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_dl</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>fit the NN
+:param epochs: amount of epochs
+:param lr: learning rate
+:param train_dl: dataloader for train
+:param valid_dl: dataloader for validation
+:return: validation accuracy, validation loss, train accuracy</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nntemplate.loss_batch">
+<span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">loss_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.loss_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>get loss value among batch
+:param model: model
+:param xb: predicts
+:param yb: labels
+:param opt: optimizer
+:return: loss</p>
 </dd></dl>
 
 </section>
