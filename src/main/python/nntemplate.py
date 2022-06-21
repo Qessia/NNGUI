@@ -31,6 +31,9 @@ transform = transforms.Compose([
 
 
 class TrainSet(Dataset):
+    """
+    Class containing train dataset
+    """
     def __init__(self, dir):
         """
         Trainset class constructor
@@ -68,8 +71,15 @@ class TrainSet(Dataset):
 
 
 class ValSet(Dataset):
+    """
+    Chunga changa
+    """
 
     def __init__(self, dir1, dir2):
+        """
+        ValSet class constructor
+        :param dir: path to trainset directory
+        """
         self.train_dir = Path(dir1)
         self.test_dir = Path(dir2)
         self.test_files_path = sorted(list(self.test_dir.rglob('*.jpg')))  # пути к файлам теста
@@ -81,9 +91,18 @@ class ValSet(Dataset):
         self.class_id = {classes[i]: i for i in range(len(classes))}  # словарик с класс айди
 
     def __len__(self):
+        """
+        get length of set
+        :return: length
+        """
         return len(self.test_files_path)
 
     def __getitem__(self, index):
+        """
+        get single item
+        :param index:
+        :return:
+        """
         img = read_image(str(self.test_files_path[index]))
         img = img / 255.0
         img = transform(img)
@@ -170,12 +189,18 @@ def fit(epochs, lr, train_dl, valid_dl):
 
 
 def get_key(d, value):
+    """
+    Gets value from dict by key
+    """
     for k, v in d.items():
         if v == value:
             return k
 
 
 def predict(img_path):
+    """
+    Makes predict
+    """
     img = read_image(img_path)
     img = img / 255.0
     img = transform(img)
