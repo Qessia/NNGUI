@@ -11,6 +11,16 @@ Welcome to NNGUI's documentation!
    :caption: Contents:
 
 
+Here are some main module functions
+
+
+.. automodule:: main
+   :members:
+
+
+Here are some functions from module with classifying NN
+
+
 .. automodule:: nntemplate
    :members:
    :special-members: __init__, __len__

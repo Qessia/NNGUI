@@ -36,6 +36,60 @@
 <h1>Welcome to NNGUI’s documentation!<a class="headerlink" href="#welcome-to-nngui-s-documentation" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
+<p>Here are some main module functions</p>
+<span class="target" id="module-main"></span><dl class="py function">
+<dt class="sig sig-object py" id="main.build_csv">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">build_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.build_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback function, builds table from chosen csv file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.change_step">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">change_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.change_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback, changes number of strings to display
+:param _: sender, unnecessary
+:param x: value</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.check_dataset">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">check_dataset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.check_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback function that ckecks whether your datasets directories were chosen correctly (see output tab)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.check_model">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">check_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.check_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback function that shows the model architecture</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.csv_surfer">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">csv_surfer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.csv_surfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback, displays (csv_step) rows, starting from (csv_index_cnt)
+:param _: sender, unnecessary
+:param x: csv_index_cnt value</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.data_prepairing">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">data_prepairing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.data_prepairing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback for DatasetBrowser class, creates dataloader objects after the train &amp; test directories are chosen</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.fit">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback function that starts model training, see the output tab for some logs</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.predict">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>callback function for single image prediction, see the output tab for the result</p>
+</dd></dl>
+
+<p>Here are some functions from module with classifying NN</p>
 <span class="target" id="module-nntemplate"></span><dl class="py class">
 <dt class="sig sig-object py" id="nntemplate.TrainSet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">TrainSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.TrainSet" title="Permalink to this definition">¶</a></dt>

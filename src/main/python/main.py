@@ -10,27 +10,31 @@ from os.path import basename
 import nntemplate as mynn
 
 
-"""
-Hello there!
-"""
-
-
 def print_me(sender):
     print(f"Menu Item: {sender}")
 
 
 def fit():
+    """
+    callback function that starts model training, see the output tab for some logs
+    """
     dpg.set_value("output", "")
     acc_val, loss_val, acc_train = mynn.fit(dpg.get_value("model_epochs"), dpg.get_value("model_lr"), train_dl, val_dl)
     dpg.set_value("output", (dpg.get_value("output") + str(acc_val) + str(loss_val) + str(acc_train) + '\n'))
 
 
 def predict():
+    """
+    callback function for single image prediction, see the output tab for the result
+    """
     pred = mynn.predict(dpg.get_value("image_path"))
-    print(pred)
+    dpg.set_value("output", (dpg.get_value("output") + str(pred) + '\n'))
 
 
 def data_prepairing():
+    """
+    Callback for DatasetBrowser class, creates dataloader objects after the train & test directories are chosen
+    """
     global train_dl
     global val_dl
     train_dir = dpg.get_value("train_dir_path")
@@ -42,26 +46,28 @@ def data_prepairing():
 
 
 def check_model():
+    """
+    callback function that shows the model architecture
+    """
     text = mynn.model
     if text:
         dpg.set_value("model_arch_text", text)
 
 
 def check_dataset():
-    print(dpg.get_value("train_dir_path"))
-    print(dpg.get_value("test_dir_path"))
-
-
-def openfile(sender, app_data):
-    print("App Data: ", app_data)
-    f = open(str(list(app_data['selections'].values())[0]), mode='r')
-
-    content = f.read()
-    dpg.set_value("code", content)
-    f.close()
+    """
+    callback function that ckecks whether your datasets directories were chosen correctly (see output tab)
+    """
+    dpg.set_value("output", (dpg.get_value("output") + dpg.get_value("train_dir_path") + '\n'
+                             + dpg.get_value("test_dir_path") + '\n'))
 
 
 def csv_surfer(_, x):
+    """
+    callback, displays (csv_step) rows, starting from (csv_index_cnt)
+    :param _: sender, unnecessary
+    :param x: csv_index_cnt value
+    """
     dpg.set_value("csv_index_cnt", x)
     if dpg.does_item_exist("csv_table"):
         dpg.delete_item("csv_table")
@@ -80,7 +86,10 @@ def csv_surfer(_, x):
                     dpg.add_text(csv.at[i, j])
 
 
-def build_csv(sender, app_data):
+def build_csv():
+    """
+    callback function, builds table from chosen csv file
+    """
     global csv
     csv = pd.read_csv(dpg.get_value("csv_path"))
     csv.insert(0, 'index', np.arange(1, len(csv) + 1))
@@ -100,11 +109,12 @@ def build_csv(sender, app_data):
                     dpg.add_text(csv.at[i, j])
 
 
-def print_val(sender):
-    print(dpg.get_value(sender))
-
-
 def change_step(_, x):
+    """
+    callback, changes number of strings to display
+    :param _: sender, unnecessary
+    :param x: value
+    """
     dpg.set_value("csv_step", x)
     if dpg.does_item_exist("csv_surfer"):
         dpg.delete_item("csv_surfer")
@@ -205,7 +215,7 @@ def gui():
         dpg.add_string_value(default_value="(None)", tag="train_dir_name")
         dpg.add_string_value(default_value="(None)", tag="test_dir_name")
 
-        dpg.add_string_value(tag="output", default_value="Here will be your output")
+        dpg.add_string_value(tag="output", default_value="Your log starts here!\n")
 
         dpg.add_string_value(default_value="Load image", tag="image_name")
         dpg.add_string_value(tag="image_path")
