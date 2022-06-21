@@ -37,7 +37,38 @@
 <div class="toctree-wrapper compound">
 </div>
 <p>Here are some main module functions</p>
-<span class="target" id="module-main"></span><dl class="py function">
+<span class="target" id="module-main"></span><dl class="py class">
+<dt class="sig sig-object py" id="main.Browser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">Browser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_sel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.Browser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Browser window superclass describing directory/folder selector
+Don’t use it separately, only for inheritance!</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.CSVBrowser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">CSVBrowser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_child</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.CSVBrowser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Browser class for selecting CSV file</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.DatasetBrowser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">DatasetBrowser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.DatasetBrowser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Browser class for selecting dataset directory</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.ImageBrowser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">ImageBrowser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_child</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.ImageBrowser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Browser class for selecting single image</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.ModelBrowser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">ModelBrowser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_child</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.ModelBrowser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Browser class for selecting model file</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="main.build_csv">
 <span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">build_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.build_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>callback function, builds table from chosen csv file</p>
@@ -84,6 +115,18 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="main.gui">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">gui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>app markup</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.gui_init">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">gui_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.gui_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>app build function</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="main.predict">
 <span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>callback function for single image prediction, see the output tab for the result</p>
@@ -93,7 +136,8 @@
 <span class="target" id="module-nntemplate"></span><dl class="py class">
 <dt class="sig sig-object py" id="nntemplate.TrainSet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">TrainSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.TrainSet" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Class containing train dataset</p>
+<dl class="py method">
 <dt class="sig sig-object py" id="nntemplate.TrainSet.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.TrainSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trainset class constructor
@@ -112,10 +156,20 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="nntemplate.ValSet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">ValSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.ValSet" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Chunga changa</p>
+<dl class="py method">
 <dt class="sig sig-object py" id="nntemplate.ValSet.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.ValSet.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>ValSet class constructor
+:param dir: path to trainset directory</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nntemplate.ValSet.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.ValSet.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>get length of set
+:return: length</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -131,6 +185,12 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nntemplate.get_key">
+<span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">get_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets value from dict by key</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nntemplate.loss_batch">
 <span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">loss_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.loss_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>get loss value among batch
@@ -139,6 +199,12 @@
 :param yb: labels
 :param opt: optimizer
 :return: loss</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nntemplate.predict">
+<span class="sig-prename descclassname"><span class="pre">nntemplate.</span></span><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#nntemplate.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes predict</p>
 </dd></dl>
 
 </section>

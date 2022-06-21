@@ -124,10 +124,12 @@ def change_step(_, x):
 
 
 class Browser:
+    """
+    Browser window superclass describing directory/folder selector
+    Don't use it separately, only for inheritance!
+    """
     def __init__(self, dir_sel, tag, exts):
         """
-        Basic browser window class describing directory/folder selector
-        Don't use it separately, only for inheritance!
         :param dir_sel: specify, whether it's directory or file selector
         :param tag: dpg item tag
         :param exts: searchable extensions
@@ -143,6 +145,9 @@ class Browser:
 
 
 class DatasetBrowser(Browser):
+    """
+    Browser class for selecting dataset directory
+    """
     def __init__(self, datatype):
         Browser.__init__(self, True, f"{datatype}_browse", {".*": (0, 255, 0, 255)})
         self.datatype = datatype
@@ -156,6 +161,9 @@ class DatasetBrowser(Browser):
 
 
 class ImageBrowser(Browser):
+    """
+    Browser class for selecting single image
+    """
     def __init__(self, tag_child):
         Browser.__init__(self, False, tag_child, {".jpg": (0, 255, 0, 255), ".png": (0, 255, 0, 255)})
 
@@ -169,6 +177,9 @@ class ImageBrowser(Browser):
 
 
 class ModelBrowser(Browser):
+    """
+    Browser class for selecting model file
+    """
     def __init__(self, tag_child):
         Browser.__init__(self, False, tag_child, {".pth": (255, 255, 0, 255)})
 
@@ -179,6 +190,9 @@ class ModelBrowser(Browser):
 
 
 class CSVBrowser(Browser):
+    """
+    Browser class for selecting CSV file
+    """
     def __init__(self, tag_child):
         Browser.__init__(self, False, tag_child, {".csv": (255, 0, 0, 255)})
 
@@ -189,6 +203,9 @@ class CSVBrowser(Browser):
 
 
 def gui():
+    """
+    app markup
+    """
     dpg.create_context()
 
     with dpg.font_registry():
@@ -342,6 +359,9 @@ def gui():
 
 
 def gui_init():
+    """
+    app build function
+    """
     dpg.create_viewport(title='NNView', width=1080, height=720)
     dpg.set_viewport_small_icon(str(Path('..', '..', 'assets', 'connect_icon_161112.ico')))
 
