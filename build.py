@@ -21,7 +21,7 @@ license = "None"
 default_task = "publish"
 
 
-@init
-def set_properties(project):
-    project.set_properties("sphinx_source_dir", "docs")
-    project.set_properties("sphinx_source_dir", "docs/_build")
+# @init
+# def set_properties(project):
+#     project.set_properties("sphinx_source_dir", "docs")
+#     project.set_properties("sphinx_source_dir", "docs/_build")
